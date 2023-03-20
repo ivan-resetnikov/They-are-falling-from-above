@@ -5,6 +5,7 @@ pg.font. init()
 pg.      init()
 
 from random import choice
+from math   import sin
 
 
 
@@ -13,7 +14,7 @@ class Game :
 		# config
 		self.windowSize  = (800, 800)
 		self.renderScale = (400, 400)
-		self.title = 'Better Fall Flat!'
+		self.title = 'They are falling from above!'
 
 		self.FPS = 60
 
@@ -76,19 +77,118 @@ class Game :
 	def updateEnemies (self) :
 		toRemove = []
 		for enermy in self.enemies :
-			enermy.update(self.tiles)
+			enermy.update(self.tiles, self.player)
 
-			if enermy.dead :
+			if enermy.deathAnim < 1 :
 				toRemove.append(enermy)
 
 		for enermy in toRemove : self.enemies.remove(enermy)
 
-		if self.enermySpawnCooldown > 32 :
+		if self.enermySpawnCooldown > 32 and not self.player.dead :
 			self.enemies.append(self.core.Enermy())
 
 			self.enermySpawnCooldown = 0
 
-		self.enermySpawnCooldown += 1
+		if not self.player.dead : self.enermySpawnCooldown += 1
+
+
+	def updateScore (self) :
+		if self.player.score > self.hiScore :
+			self.hiScoreDisplaySize = 10
+
+			self.hiScore = self.player.score
+
+		if self.player.dead : self.font0 = pg.Font('assets/pixel.otf', 40)
+		if self.player.dead : self.font1 = pg.Font('assets/pixel.otf', 20)
+
+		if not self.player.dead : color = (255, 255, 255)
+		else : color = (251, 242, 54)
+
+		self.scoreText       = self.font0.render(f'score: {self.player.score}', False, color)
+		self.scoreTextShadow = self.font0.render(f'score: {self.player.score}', False, (34, 32, 52))
+
+		self.hiScoreText       = self.font1.render(f'hi score: {self.hiScore}', False, color)
+		self.hiScoreTextShadow = self.font1.render(f'hi score: {self.hiScore}', False, (34, 32, 52))
+
+
+	def renderScore (self) :
+		# text
+		img = pg.transform.rotate(
+			pg.transform.scale(
+				self.scoreText,
+				(
+					self.scoreText.get_width () + self.scoreDisplaySize,
+					self.scoreText.get_height() + self.scoreDisplaySize
+				)),
+			sin(self.scoreAnim) * 5)
+
+		# shadow
+		shadow = pg.transform.rotate(
+			pg.transform.scale(
+				self.scoreTextShadow,
+				(
+					self.scoreTextShadow.get_width() + self.scoreDisplaySize,
+					self.scoreTextShadow.get_height() + self.scoreDisplaySize
+				)),
+			sin(self.scoreAnim) * 5)
+
+		# text
+		hiImg = pg.transform.rotate(
+			pg.transform.scale(
+				self.hiScoreText,
+				(
+					self.hiScoreText.get_width () + self.hiScoreDisplaySize,
+					self.hiScoreText.get_height() + self.hiScoreDisplaySize
+				)),
+			sin(self.scoreAnim) * 5)
+
+		# shadow
+		hiShadow = pg.transform.rotate(
+			pg.transform.scale(
+				self.hiScoreTextShadow,
+				(
+					self.hiScoreTextShadow.get_width() + self.hiScoreDisplaySize,
+					self.hiScoreTextShadow.get_height() + self.hiScoreDisplaySize
+				)),
+			sin(self.scoreAnim) * 5)
+		
+		# score
+		self.frame.blit(
+			shadow,
+			(
+				200 - (shadow.get_width () * 0.5) + 2,
+				50 - (shadow.get_height() * 0.5) + 2
+			))
+
+		self.frame.blit(
+			img,
+			(
+				200 - (img.get_width () * 0.5),
+				50 - (img.get_height() * 0.5)
+			))
+
+		# high score
+		self.frame.blit(
+			hiShadow,
+			(
+				200 - (hiShadow.get_width () * 0.5) + 2,
+				100 - (hiShadow.get_height() * 0.5) + 2
+			))
+
+		self.frame.blit(
+			hiImg,
+			(
+				200 - (hiImg.get_width () * 0.5),
+				100 - (hiImg.get_height() * 0.5)
+			))
+
+		# update animations
+		self.scoreAnim += 0.1
+
+		if self.scoreAnim >= 6.28 : self.scoreAnim = 0
+
+		self.scoreDisplaySize *= 0.8
+		self.hiScoreDisplaySize *= 0.8
 
 
 	def render (self) :
@@ -106,6 +206,9 @@ class Game :
 		self.target.render(self.frame, self.camera)
 		self.player.render(self.frame, self.camera)
 
+		# score display
+		self.renderScore()
+
 		# update window
 		self.window.blit(pg.transform.scale(self.frame, self.windowSize), (0, 0))
 		self.clock.tick(self.FPS)
@@ -121,7 +224,17 @@ class Game :
 		self.updateEnemies()
 
 		# target
-		self.target.update(self.player, self.targetPositions)
+		self.target.update(self.player, self.targetPositions, self.updateScore, self)
+
+		if self.player.dead and self.state == 'gameplay' :
+			self.state = 'dead'
+
+			self.updateScore()
+
+			self.core.writeToJSON('score.save', {'score': self.hiScore})
+
+		if self.player.pos[1] > 400 :
+			self.player.dead = True
 
 
 	def onStart (self) :
@@ -141,6 +254,26 @@ class Game :
 
 		# target
 		self.target = self.core.Target(choice(self.targetPositions))
+
+		# score counter
+		self.scoreAnim = 0
+		self.scoreDisplaySize = 0
+		self.hiScoreDisplaySize = 0
+
+		self.font0 = pg.font.Font('assets/pixel.otf', 20)
+		self.font1 = pg.font.Font('assets/pixel.otf', 10)
+
+		self.hiScore = self.core.loadFromJSON('score.save')['score']
+
+		self.updateScore()
+
+		# music
+		pg.mixer.music.load('assets/music/music.ogg')
+		pg.mixer.music.set_volume(0.2)
+		pg.mixer.music.play(-1)
+
+		self.state = 'gameplay'
+
 
 
 if __name__ == '__main__' : Game().run()

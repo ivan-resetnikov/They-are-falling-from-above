@@ -29,16 +29,24 @@ class Target :
 		else : self.pos = plannedPos
 
 
-	def update (self, player, pos) :
-		if colliding(self, [player]) :
+	def update (self, player, pos, updateScore, game) :
+		if colliding(self, [player], [-8, 0]) :
 			self.changePos(pos)
 
 			player.score += 1
+
+			self.cam.screenShake = 2.5
+
+			updateScore()
+
+			game.scoreDisplaySize = 5
 
 			Sounds['player']['score'].play()
 
 
 	def render (self, frame, cam) :
+		self.cam = cam
+
 		if self.anim < 10 :
 			color =  (255, 255, 255)
 		elif self.anim >= 10 :

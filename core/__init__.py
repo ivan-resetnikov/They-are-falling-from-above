@@ -3,3 +3,4 @@ from .player import Player
 from .camera import Camera
 from .enermy import Enermy
 from .score  import Target
+from .file import loadFromJSON, writeToJSON
