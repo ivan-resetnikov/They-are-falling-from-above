@@ -4,9 +4,8 @@ import math
 import core
 
 
-class Game :
-	def __init__(self) :
-		# config
+class Game:
+	def __init__(self):
 		self.windowSize  = (800, 800)
 		self.renderScale = (400, 400)
 		self.title = 'They are falling from above!'
@@ -22,37 +21,39 @@ class Game :
 		# initialize core components
 		self.core = core
 
-	def run(self) :
+	def run(self):
 		self.onStart()
 		self.running = True
-		while self.running :
-			for event in pg.event.get() :
-				if event.type == pg.QUIT :
+		while self.running:
+			for event in pg.event.get():
+				if event.type == pg.QUIT:
 					self.running = False
 			self.update()
 			self.render()
 
-	def initBG(self) :
+	def initBG(self):
 		self.bg = pg.image.load('assets/bg.png').convert()
 		self.bgSpeed = 0.5
 		self.bgBlocks = []
 		self.bgSpawnCooldown = 128 - self.bgSpeed
 
-		for y in range(12) :
-			for x in range(12) :
+		for y in range(12):
+			for x in range(12):
 				self.bgBlocks.append([[64 * x - self.bgSpeed, 64 * y - self.bgSpeed]])
 
-	def renderBG(self) :
-		for block in self.bgBlocks :
+	def renderBG(self):
+		for block in self.bgBlocks:
 			self.frame.blit(self.bg, block[0])
 			block[0][0] += self.bgSpeed
 			block[0][1] += self.bgSpeed
-			if block[0][0] > self.renderScale[0] and block[0][1] > self.renderScale[1] :
+			if block[0][0] > self.renderScale[0] and block[0][1] > self.renderScale[1]:
 				self.bgBlocks.remove(block)
 
-		if self.bgSpawnCooldown > 64 * (1 / self.bgSpeed) - 1 :
-			for i in range(12) : self.bgBlocks.append([[-64, -64 + (64 * i)]])
-			for i in range(12) : self.bgBlocks.append([[-64 + (64 * i), -64]])
+		if self.bgSpawnCooldown > 64 * (1 / self.bgSpeed) - 1:
+			for i in range(12): 
+				self.bgBlocks.append([[-64, -64 + (64 * i)]])
+			for i in range(12): 
+				self.bgBlocks.append([[-64 + (64 * i), -64]])
 			self.bgSpawnCooldown = 0
 		self.bgSpawnCooldown += 1
 
@@ -79,21 +80,17 @@ class Game :
 			self.hiScore = self.player.score
 
 		if self.player.dead:
-			self.font0 = pg.Font('assets/pixel.otf', 40)
-		if self.player.dead:
-			self.font1 = pg.Font('assets/pixel.otf', 20)
-
-		if not self.player.dead:
+			color = (251, 242, 54)
+		else:
 			color = (255, 255, 255)
-		else : color = (251, 242, 54)
 
 		self.scoreText = self.font0.render(f'score: {self.player.score}', False, color)
 		self.scoreTextShadow = self.font0.render(f'score: {self.player.score}', False, (34, 32, 52))
 
 		self.hiScoreText = self.font1.render(f'hi score: {self.hiScore}', False, color)
-		self.hiScoreTextShadow = self.font1.render(f'hi score: {self.hiScore}', False, (34, 32, 52))
+		self.hiScoreTextShadow = self.font1.render(f'hi score: {self.hiScore}', False,(34, 32, 52))
 
-	def renderScore (self) :
+	def renderScore(self):
 		# text
 		txt_width = self.scoreText.get_width()
 		txt_height = self.scoreText.get_height()
@@ -123,7 +120,7 @@ class Game :
 		self.scoreDisplaySize *= 0.8
 		self.hiScoreDisplaySize *= 0.8
 
-	def render (self) :
+	def render(self):
 		# clear frame
 		self.frame.fill((0, 0, 0))
 
@@ -147,23 +144,21 @@ class Game :
 		self.clock.tick(self.FPS)
 		pg.display.flip()
 
-	def update (self) :
+	def update(self):
 		self.camera.update()
+		# this also handles input
 		self.player.update(self.tiles)
-
 		self.updateEnemies()
-
 		self.target.update(self.player, self.targetPositions, self.updateScore, self)
 
-		if self.player.dead and self.state == 'gameplay':
-			self.state = 'dead'
+		if self.player.dead:
 			self.updateScore()
 			self.core.writeToJSON('score.save', {'score': self.hiScore})
 
 		if self.player.pos[1] > 400:
 			self.player.dead = True
 
-	def onStart (self) :
+	def onStart(self):
 		self.tiles, self.targetPositions = self.core.loadLevel()
 		self.player = self.core.Player()
 		self.camera = self.core.Camera(self.player)
@@ -186,7 +181,6 @@ class Game :
 		pg.mixer.music.load('assets/music/music.ogg')
 		pg.mixer.music.set_volume(0.2)
 		pg.mixer.music.play(-1)
-		self.state = 'gameplay'
 
 
 if __name__ == '__main__':

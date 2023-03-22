@@ -29,10 +29,10 @@ CONTROLLER = {
 	'jump_force': -5.5,
 	'coyote_jump_time': 11,
 
-	'jump_gravity' : 0.2,
+	'jump_gravity': 0.2,
 	'glide_gravity': 0.08,
-	'fall_gravity' : 0.6,
+	'fall_gravity': 0.6,
 
-	'max_fall_speed' : 6.5,
+	'max_fall_speed': 6.5,
 }
 
