@@ -1,15 +1,13 @@
 import pygame as pg
-from .sound import SOUNDS
 import random
 from .constants import CONTROLLER
 
 
-def colliding (obj, colliders, offset=[0, 0]) :
-	colliding = False
+def colliding (obj, colliders, offset=[0, 0]) -> bool:
 	for collider in colliders :
 		if pg.Rect((obj.pos[0] - offset[0], obj.pos[1] - offset[1], obj.size[0], obj.size[1])).colliderect((collider.pos[0], collider.pos[1], collider.size[0], collider.size[1])) :
-			colliding = True
-	return colliding
+			return True
+	return False
 
 
 class Player :
@@ -28,6 +26,16 @@ class Player :
 		self.deathAnimParticles = []
 		self.spawnedDeathParticles = False
 
+	def _play_sound(self, sound_name: str):
+		valid_sound_names_list = ['jump', 'death']
+		if sound_name in valid_sound_names_list:
+			sound = pg.mixer.Sound(f"assets/sounds/{sound_name}.wav")
+			if sound_name == 'death':
+				sound.set_volume(2)
+			else:
+				sound.set_volume(.25)
+			sound.play()
+
 	def update (self, level) :
 		if not self.dead :
 			self.physics(level, pg.key.get_pressed())
@@ -40,7 +48,7 @@ class Player :
 						[random.uniform(-7, 7), random.uniform(-6, -4)],
 						random.randint(1, 3)
 					])
-				SOUNDS['player']['death'].play()
+				self._play_sound('death')
 				pg.mixer.music.fadeout(1 * 1000)
 				self.pos = [198, 0]
 				self.vel = [0, 0]
@@ -107,10 +115,8 @@ class Player :
 			if keys[pg.K_SPACE] and not self.holding_space :
 				self.vel[1] = CONTROLLER['jump_force']
 				self.holding_space = True
-
 				self.pos[1] += self.vel[1]
-
-				SOUNDS['player']['jump'].play()
+				self._play_sound('jump')
 
 		# cut jump height
 		self.pos[1] += 3

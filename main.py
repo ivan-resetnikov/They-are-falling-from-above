@@ -1,10 +1,6 @@
 import pygame as pg
 import random
 import math
-
-pg.mixer.init()
-pg.font.init()
-pg.init()
 import core
 
 
@@ -241,4 +237,7 @@ class Game :
 
 
 if __name__ == '__main__':
+	pg.mixer.init()
+	pg.font.init()
+	pg.init()
 	Game().run()

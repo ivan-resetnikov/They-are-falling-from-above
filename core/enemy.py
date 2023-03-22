@@ -1,6 +1,5 @@
 import pygame as pg
 from .player import colliding
-from .sound  import SOUNDS
 import random
 from .constants import DEATH_ANIM_SIZE
 
@@ -21,6 +20,13 @@ class enemy :
 		self.deathRect.fill((255, 255, 255))
 		self.deathAnim = DEATH_ANIM_SIZE
 		self.deathAnimRot = random.randint(0, 360)
+
+	def _play_sound(self, sound_name: str):
+		valid_sound_names_list = ['hit']
+		if sound_name in valid_sound_names_list:
+			sound = pg.mixer.Sound(f"assets/sounds/{sound_name}.wav")
+			sound.set_volume(.5)
+			sound.play()
 
 	def render (self, frame, cam) :
 		self.cam = cam
@@ -57,7 +63,7 @@ class enemy :
 			self.deathAnim -= 1
 			self.speed = 0
 			self.cam.screenShake = 2
-			SOUNDS['enemy']['death'].play()
+			self._play_sound('hit')
 
 		if self.dead and self.deathAnim > 0 and self.deathAnim < DEATH_ANIM_SIZE:
 			self.deathAnim *= 0.6

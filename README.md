@@ -7,7 +7,7 @@ Just wanted to add a couple of features that looked fun (randomly generated leve
 Planning on fixing some things up, adding the features, and then handing this back to the author if they want it. 
 
 TODO:
-  * Change how sound works
+  * ~~Change how sound works (objects play their own sounds)~~
   * Add randomly generated levels
   * Add different types of tiles that disappear.
   * Clean up Main
