@@ -12,8 +12,8 @@ TODO:
   * Add different types of tiles that disappear.
   * Clean up Main
   * make code more pythonic and easier to read
-  * "enermy" class shouldn't be changing player, camera, or anything else
-  * fix "enermy" uses function from "player" class
+  * "enemy" class shouldn't be changing player, camera, or anything else
+  * fix "enemy" uses function from "player" class
   * make game over work gracefully
   * start game menu
   * game over menu 

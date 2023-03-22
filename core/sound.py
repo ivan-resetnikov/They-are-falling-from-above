@@ -13,7 +13,7 @@ SOUNDS = {
 		'score' : loadSound('score.wav'),
 		'death' : loadSound('death.wav', 2)
 	},
-	'enermy' : {
+	'enemy' : {
 		'death' : loadSound('hit.wav', 0.5)
 	}
 }

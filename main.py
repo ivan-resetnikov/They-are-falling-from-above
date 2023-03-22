@@ -1,6 +1,6 @@
 import pygame as pg
-from random import choice
-from math import sin
+import random
+import math
 
 pg.mixer.init()
 pg.font.init()
@@ -63,20 +63,20 @@ class Game :
 
 	def updateEnemies(self):
 		toRemove = []
-		for enermy in self.enemies:
-			enermy.update(self.tiles, self.player)
-			if enermy.deathAnim < 1:
-				toRemove.append(enermy)
+		for enemy in self.enemies:
+			enemy.update(self.tiles, self.player)
+			if enemy.deathAnim < 1:
+				toRemove.append(enemy)
 
-		for enermy in toRemove:
-			self.enemies.remove(enermy)
+		for enemy in toRemove:
+			self.enemies.remove(enemy)
 
-		if self.enermySpawnCooldown > 32 and not self.player.dead:
-			self.enemies.append(self.core.Enermy())
-			self.enermySpawnCooldown = 0
+		if self.enemySpawnCooldown > 32 and not self.player.dead:
+			self.enemies.append(self.core.enemy())
+			self.enemySpawnCooldown = 0
 
 		if not self.player.dead: 
-			self.enermySpawnCooldown += 1
+			self.enemySpawnCooldown += 1
 
 	def updateScore (self):
 		if self.player.score > self.hiScore:
@@ -100,14 +100,9 @@ class Game :
 
 	def renderScore (self) :
 		# text
-		img = pg.transform.rotate(
-			pg.transform.scale(
-				self.scoreText,
-				(
-					self.scoreText.get_width () + self.scoreDisplaySize,
-					self.scoreText.get_height() + self.scoreDisplaySize
-				)),
-			sin(self.scoreAnim) * 5)
+		txt_width = self.scoreText.get_width()
+		txt_height = self.scoreText.get_height()
+		img = pg.transform.rotate( pg.transform.scale( self.scoreText, ( txt_width + self.scoreDisplaySize, txt_height + self.scoreDisplaySize )),	math.sin(self.scoreAnim) * 5)
 
 		# shadow
 		shadow = pg.transform.rotate(
@@ -117,7 +112,7 @@ class Game :
 					self.scoreTextShadow.get_width() + self.scoreDisplaySize,
 					self.scoreTextShadow.get_height() + self.scoreDisplaySize
 				)),
-			sin(self.scoreAnim) * 5)
+			math.sin(self.scoreAnim) * 5)
 
 		# text
 		hiImg = pg.transform.rotate(
@@ -127,7 +122,7 @@ class Game :
 					self.hiScoreText.get_width () + self.hiScoreDisplaySize,
 					self.hiScoreText.get_height() + self.hiScoreDisplaySize
 				)),
-			sin(self.scoreAnim) * 5)
+			math.sin(self.scoreAnim) * 5)
 
 		# shadow
 		hiShadow = pg.transform.rotate(
@@ -137,7 +132,7 @@ class Game :
 					self.hiScoreTextShadow.get_width() + self.hiScoreDisplaySize,
 					self.hiScoreTextShadow.get_height() + self.hiScoreDisplaySize
 				)),
-			sin(self.scoreAnim) * 5)
+			math.sin(self.scoreAnim) * 5)
 		
 		# score
 		self.frame.blit(
@@ -185,7 +180,7 @@ class Game :
 
 		# level & enemies
 		[tile  .render(self.frame, self.camera) for tile   in self.tiles]
-		[enermy.render(self.frame, self.camera) for enermy in self.enemies]
+		[enemy.render(self.frame, self.camera) for enemy in self.enemies]
 
 		# target & player
 		self.target.render(self.frame, self.camera)
@@ -205,7 +200,7 @@ class Game :
 		self.camera.update()
 		self.player.update(self.tiles)
 
-		# enermy
+		# enemy
 		self.updateEnemies()
 
 		# target
@@ -224,9 +219,9 @@ class Game :
 		self.player = self.core.Player()
 		self.camera = self.core.Camera(self.player)
 		self.enemies = []
-		self.enermySpawnCooldown = 0
+		self.enemySpawnCooldown = 0
 		self.initBG()
-		self.target = self.core.Target(choice(self.targetPositions))
+		self.target = self.core.Target(random.choice(self.targetPositions))
 
 		# score counter
 		self.scoreAnim = 0

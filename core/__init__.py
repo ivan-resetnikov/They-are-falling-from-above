@@ -1,6 +1,6 @@
 from .level  import loadLevel
 from .player import Player
 from .camera import Camera
-from .enermy import Enermy
+from .enemy import enemy
 from .score  import Target
 from .file import loadFromJSON, writeToJSON

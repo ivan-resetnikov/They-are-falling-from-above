@@ -1,6 +1,6 @@
 import pygame as pg
 from .sound import SOUNDS
-from random import randint, uniform
+import random
 from .constants import CONTROLLER
 
 
@@ -37,8 +37,8 @@ class Player :
 				for _ in range(10) : self.deathAnimParticles.append(
 					[
 						[self.pos[0] + 8, self.pos[1] + 8],
-						[uniform(-7, 7), uniform(-6, -4)],
-						randint(1, 3)
+						[random.uniform(-7, 7), random.uniform(-6, -4)],
+						random.randint(1, 3)
 					])
 				SOUNDS['player']['death'].play()
 				pg.mixer.music.fadeout(1 * 1000)

@@ -1,18 +1,18 @@
 import pygame as pg
 from .player import colliding
 from .sound  import SOUNDS
-from random import uniform, randint
+import random
 from .constants import DEATH_ANIM_SIZE
 
 
-class Enermy :
+class enemy :
 	def __init__ (self) :
-		self.img = pg.image.load('assets/enermy.png').convert_alpha()
-		self.shadow = pg.image.load('assets/enermy.png').convert_alpha()
+		self.img = pg.image.load('assets/enemy.png').convert_alpha()
+		self.shadow = pg.image.load('assets/enemy.png').convert_alpha()
 		self.shadow.fill((34, 32, 52))
 		self.shadow.set_alpha(128)
-		self.pos = [randint(64, 336), -16]
-		self.speed = uniform(3, 4)
+		self.pos = [random.randint(64, 336), -16]
+		self.speed = random.uniform(3, 4)
 		self.size = [12, 10]
 		self.time = 0
 		self.dead = False
@@ -20,7 +20,7 @@ class Enermy :
 		self.deathRect = pg.Surface((16, 8)).convert_alpha()
 		self.deathRect.fill((255, 255, 255))
 		self.deathAnim = DEATH_ANIM_SIZE
-		self.deathAnimRot = randint(0, 360)
+		self.deathAnimRot = random.randint(0, 360)
 
 	def render (self, frame, cam) :
 		self.cam = cam
@@ -57,7 +57,7 @@ class Enermy :
 			self.deathAnim -= 1
 			self.speed = 0
 			self.cam.screenShake = 2
-			SOUNDS['enermy']['death'].play()
+			SOUNDS['enemy']['death'].play()
 
 		if self.dead and self.deathAnim > 0 and self.deathAnim < DEATH_ANIM_SIZE:
 			self.deathAnim *= 0.6
