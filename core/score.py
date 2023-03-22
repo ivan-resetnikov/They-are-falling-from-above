@@ -1,48 +1,32 @@
-from .player import colliding
-from .sound  import Sounds
-
-from random import choice
-
 import pygame as pg
-
+from .player import colliding
+from .sound  import SOUNDS
+from random import choice
 
 
 class Target :
 	def __init__ (self, pos) :
 		self.pos = [pos[0] + 7, pos[1] + 25]
-
 		self.size = (18, 4)
-
 		self.anim = 0
-
 
 	def changePos (self, pos) :
 		plannedPos = choice(pos)
-
 		plannedPos = [plannedPos[0] + 7, plannedPos[1] + 25]
 
 		while plannedPos == self.pos :
 			plannedPos = choice(pos)
-
 			plannedPos = [plannedPos[0] + 7, plannedPos[1] + 25]
-
 		else : self.pos = plannedPos
-
 
 	def update (self, player, pos, updateScore, game) :
 		if colliding(self, [player], [-8, 0]) :
 			self.changePos(pos)
-
 			player.score += 1
-
 			self.cam.screenShake = 2.5
-
 			updateScore()
-
 			game.scoreDisplaySize = 5
-
-			Sounds['player']['score'].play()
-
+			SOUNDS['player']['score'].play()
 
 	def render (self, frame, cam) :
 		self.cam = cam

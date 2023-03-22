@@ -1,23 +1,5 @@
 import pygame as pg
-
-TileSize = 32
-
-location = [
-	'            ',
-	'            ',
-	'            ',
-	'            ',
-	'         .  ',
-	'      .  #  ',
-	'  . . #  .  ',
-	'  # # #  #  ',
-	'  ..#....#. ',
-	'  ######### ',
-	'  ######### ',
-	'  ######### ',
-	'  ######### '
-]
-
+from .constants import *
 
 
 class Tile :
@@ -29,7 +11,6 @@ class Tile :
 		self.pos = pos
 
 		self.size = (32, 32)
-
 
 	def render (self, frame, cam) :
 		frame.blit(self.bg, (
@@ -47,11 +28,11 @@ def loadLevel () :
 	tiles = []
 	targetPos = []
 
-	for y, line in enumerate(location) :
+	for y, line in enumerate(LOCATION) :
 		for x, char in enumerate(line) :
 			if char != ' ' and char != '.' :
-				tiles.append(Tile((x * TileSize, y * TileSize),))
+				tiles.append(Tile((x * TILE_SIZE, y * TILE_SIZE),))
 			elif char == '.' :
-				targetPos.append([x * TileSize, y * TileSize],)
+				targetPos.append([x * TILE_SIZE, y * TILE_SIZE],)
 
 	return tiles, targetPos
