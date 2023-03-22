@@ -2,7 +2,7 @@ import pygame as pg
 from .player import colliding
 from .sound  import SOUNDS
 from random import uniform, randint
-from .constants import *
+from .constants import DEATH_ANIM_SIZE
 
 
 class Enermy :
@@ -25,19 +25,12 @@ class Enermy :
 	def render (self, frame, cam) :
 		self.cam = cam
 		shadow = pg.transform.rotate(self.shadow, self.time * self.speed)
-		img    = pg.transform.rotate(self.img, self.time * self.speed)
+		img = pg.transform.rotate(self.img, self.time * self.speed)
 
-		frame.blit(shadow, (
-				self.pos[0] - cam.pos[0] - (img.get_width () * 0.5) + 2,
-				self.pos[1] - cam.pos[1] - (img.get_height() * 0.5) + 2
-			))
+		frame.blit(shadow, ( self.pos[0] - cam.pos[0] - (img.get_width() * 0.5) + 2, self.pos[1] - cam.pos[1] - (img.get_height() * 0.5) + 2))
+		frame.blit(img, ( self.pos[0] - cam.pos[0] - (img.get_width() * 0.5), self.pos[1] - cam.pos[1] - (img.get_height() * 0.5)))
 
-		frame.blit(img, (
-				self.pos[0] - cam.pos[0] - (img.get_width () * 0.5),
-				self.pos[1] - cam.pos[1] - (img.get_height() * 0.5)
-			))
-
-		if self.deathAnim < DEATH_ANIM_SIZE :
+		if self.deathAnim < DEATH_ANIM_SIZE:
 			img = pg.transform.rotate(
 					pg.transform.scale(
 						self.deathRect,
@@ -47,28 +40,24 @@ class Enermy :
 						)
 					),
 					self.deathAnimRot)
-			frame.blit(
-				img,
-				(
-					self.pos[0] - img.get_width () * 0.5 - cam.pos[0],
-					self.pos[1] - img.get_height() * 0.5 - cam.pos[1]
-				))
+			frame.blit( img, ( self.pos[0] - img.get_width () * 0.5 - cam.pos[0], self.pos[1] - img.get_height() * 0.5 - cam.pos[1] ))
 
-	def update (self, level, player) :
-		if colliding(self, level, [6, 0]) :
+	def update(self, level, player):
+		if colliding(self, level, [6, 0]):
 			self.dead = True
-		if colliding(self, [player], [6, 0]) :
+		if colliding(self, [player], [6, 0]):
 			player.dead = True
 			self.dead = True
 
 		self.pos[1] += self.speed
 		self.time += 1
 
-		if self.dead and not self.playedDeathAnim :
+		if self.dead and not self.playedDeathAnim:
 			self.playedDeathAnim = True
 			self.deathAnim -= 1
 			self.speed = 0
 			self.cam.screenShake = 2
 			SOUNDS['enermy']['death'].play()
 
-		if self.dead and self.deathAnim > 0 and self.deathAnim < DEATH_ANIM_SIZE : self.deathAnim *= 0.6
+		if self.dead and self.deathAnim > 0 and self.deathAnim < DEATH_ANIM_SIZE:
+			self.deathAnim *= 0.6

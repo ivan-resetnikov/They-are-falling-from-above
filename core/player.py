@@ -1,7 +1,7 @@
 import pygame as pg
 from .sound import SOUNDS
 from random import randint, uniform
-from .constants import *
+from .constants import CONTROLLER
 
 
 def colliding (obj, colliders, offset=[0, 0]) :
