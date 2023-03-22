@@ -8,13 +8,13 @@ Planning on fixing some things up, adding the features, and then handing this ba
 
 TODO:
   * ~~Change how sound works (objects play their own sounds)~~
-  * Add randomly generated levels
+  * Add procedurally generated levels
   * Add different types of tiles that disappear.
   * Clean up Main
   * make code more pythonic and easier to read
   * "enemy" class shouldn't be changing player, camera, or anything else
   * fix "enemy" uses function from "player" class
-  * make game over work gracefully
+  * ~~make game over work gracefully (this was implemented but bugged, fixed bug)~~
   * start game menu
   * game over menu 
-  * create an input handler and add controller support
+  * create an input handler and add controller support (due to some player movement being state based, this isn't happening)
