@@ -14,10 +14,10 @@ def colliding (obj, colliders, offset=[0, 0]) :
 
 class Player :
 	def __init__ (self) :
-		self.img = pg.image.load('assets/player.png').convert_alpha()
-		self.shadow = pg.image.load('assets/player.png').convert_alpha()
-		self.shadow.fill((34, 32, 52))
-		self.shadow.set_alpha(128)
+		self.img_surface = pg.image.load('assets/player.png').convert_alpha()
+		self.shadow_surface = pg.image.load('assets/player.png').convert_alpha()
+		self.shadow_surface.fill((34, 32, 52))
+		self.shadow_surface.set_alpha(128)
 		self.pos = [198, 0]
 		self.vel = [0, 0]
 		self.size = (16, 16)
@@ -46,37 +46,16 @@ class Player :
 				self.vel = [0, 0]
 
 	def render (self, frame, cam) :
-		img = pg.transform.rotate(
-				pg.transform.scale(
-					self.img,
-					(
-						self.img.get_width()  + abs(self.vel[0]) - abs(self.vel[1] * 0.5),
-						self.img.get_height() + self.vel[1]
-					)),
-				self.vel[0] * 5)
+		img_size = ( self.img_surface.get_width() + abs(self.vel[0]) - abs(self.vel[1] * 0.5),	self.img_surface.get_height() + self.vel[1] )
+		img_angle = self.vel[0] * 5
+		img = pg.transform.rotate( pg.transform.scale( self.img_surface, img_size ), img_angle )
 
-		shadow = pg.transform.rotate(
-				pg.transform.scale(
-					self.shadow,
-					(
-						self.img.get_width()  + round(abs(self.vel[0]) + 0.5) - round(abs(self.vel[1] * 0.5)),
-						self.img.get_height() + self.vel[1]
-					)),
-				self.vel[0] * 5)
+		shadow_size = ( self.img_surface.get_width()  + round(abs(self.vel[0]) + 0.5) - round(abs(self.vel[1] * 0.5)), self.img_surface.get_height() + self.vel[1] )
+		shadow_angle = self.vel[0] * 5
+		shadow = pg.transform.rotate( pg.transform.scale( self.shadow_surface, shadow_size), shadow_angle)
 
-		frame.blit(
-			shadow,
-			(
-				self.pos[0] - cam.pos[0] - (img.get_width() * 0.5) + 2,
-				self.pos[1] - cam.pos[1] + 2
-			))
-
-		frame.blit(
-			img,
-			(
-				self.pos[0] - cam.pos[0] - (img.get_width() * 0.5),
-				self.pos[1] - cam.pos[1]
-			))
+		frame.blit( shadow,( self.pos[0] - cam.pos[0] - ( img.get_width() * 0.5 ) + 2, self.pos[1] - cam.pos[1] + 2 ) )
+		frame.blit( img,( self.pos[0] - cam.pos[0] - ( img.get_width() * 0.5 ), self.pos[1] - cam.pos[1] ) )
 
 		for particle in self.deathAnimParticles :
 			pg.draw.circle(frame, (255, 255, 255), particle[0], particle[2])
