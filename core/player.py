@@ -81,15 +81,17 @@ class Player :
 		self.pos[0] += self.vel[0]
 
 		# wall colliding
-		if colliding(self, colliders, [8, 0]) : self.pos[0] -= self.vel[0]
+		if colliding(self, colliders, [8, 0]):
+			self.pos[0] -= self.vel[0]
 
 		# friction
-		if keys[pg.K_a] or keys[pg.K_d] : self.vel[0] *= CONTROLLER['run_friction']
-		if not keys[pg.K_a] and not keys[pg.K_d] : self.vel[0] *= CONTROLLER['brake_friction']
+		if keys[pg.K_a] or keys[pg.K_d]: 
+			self.vel[0] *= CONTROLLER['run_friction']
+		if not keys[pg.K_a] and not keys[pg.K_d]:
+			self.vel[0] *= CONTROLLER['brake_friction']
 
 		### gravity
 		self.pos[1] += self.vel[1]
-
 		self.pos[1] += 1
 
 		# landing
@@ -97,7 +99,6 @@ class Player :
 			self.pos[1] -= self.vel[1]
 			self.vel[1] = 0
 			self.time_since_landed = CONTROLLER['coyote_jump_time']
-
 		else :
 			# gravity
 			if self.vel[1] > 0 : self.vel[1] += CONTROLLER['fall_gravity']
@@ -108,11 +109,12 @@ class Player :
 		self.pos[1] -= 1
 
 		# coyote jump timer
-		if self.time_since_landed > 0 : self.time_since_landed -= 1
+		if self.time_since_landed > 0: 
+			self.time_since_landed -= 1
 
 		# jump
 		if self.time_since_landed > 0 :
-			if keys[pg.K_SPACE] and not self.holding_space :
+			if keys[pg.K_SPACE] and not self.holding_space:
 				self.vel[1] = CONTROLLER['jump_force']
 				self.holding_space = True
 				self.pos[1] += self.vel[1]
@@ -121,8 +123,8 @@ class Player :
 		# cut jump height
 		self.pos[1] += 3
 
-		if (self.holding_space and not keys[pg.K_SPACE]) or (self.holding_space and colliding(self, colliders, [8, 0])) :
+		if (self.holding_space and not keys[pg.K_SPACE]) or (self.holding_space and colliding(self, colliders, [8, 0])):
 			self.vel[1] /= 3
 			self.holding_space = False
-
+			
 		self.pos[1] -= 3

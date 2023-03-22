@@ -17,3 +17,4 @@ TODO:
   * make game over work gracefully
   * start game menu
   * game over menu 
+  * create an input handler and add controller support

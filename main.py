@@ -24,7 +24,6 @@ class Game :
 
 	def run(self) :
 		self.onStart()
-
 		self.running = True
 		while self.running :
 			for event in pg.event.get() :
@@ -74,7 +73,7 @@ class Game :
 		if not self.player.dead: 
 			self.enemySpawnCooldown += 1
 
-	def updateScore (self):
+	def updateScore(self):
 		if self.player.score > self.hiScore:
 			self.hiScoreDisplaySize = 10
 			self.hiScore = self.player.score
@@ -101,82 +100,40 @@ class Game :
 		img = pg.transform.rotate( pg.transform.scale( self.scoreText, ( txt_width + self.scoreDisplaySize, txt_height + self.scoreDisplaySize )),	math.sin(self.scoreAnim) * 5)
 
 		# shadow
-		shadow = pg.transform.rotate(
-			pg.transform.scale(
-				self.scoreTextShadow,
-				(
-					self.scoreTextShadow.get_width() + self.scoreDisplaySize,
-					self.scoreTextShadow.get_height() + self.scoreDisplaySize
-				)),
-			math.sin(self.scoreAnim) * 5)
+		shadow = pg.transform.rotate( pg.transform.scale( self.scoreTextShadow,	( self.scoreTextShadow.get_width() + self.scoreDisplaySize, self.scoreTextShadow.get_height() + self.scoreDisplaySize )), math.sin(self.scoreAnim) * 5)
 
 		# text
-		hiImg = pg.transform.rotate(
-			pg.transform.scale(
-				self.hiScoreText,
-				(
-					self.hiScoreText.get_width () + self.hiScoreDisplaySize,
-					self.hiScoreText.get_height() + self.hiScoreDisplaySize
-				)),
-			math.sin(self.scoreAnim) * 5)
+		hiImg = pg.transform.rotate( pg.transform.scale( self.hiScoreText, ( self.hiScoreText.get_width () + self.hiScoreDisplaySize, self.hiScoreText.get_height() + self.hiScoreDisplaySize )), math.sin(self.scoreAnim) * 5)
 
 		# shadow
-		hiShadow = pg.transform.rotate(
-			pg.transform.scale(
-				self.hiScoreTextShadow,
-				(
-					self.hiScoreTextShadow.get_width() + self.hiScoreDisplaySize,
-					self.hiScoreTextShadow.get_height() + self.hiScoreDisplaySize
-				)),
-			math.sin(self.scoreAnim) * 5)
+		hiShadow = pg.transform.rotate( pg.transform.scale( self.hiScoreTextShadow, ( self.hiScoreTextShadow.get_width() + self.hiScoreDisplaySize, self.hiScoreTextShadow.get_height() + self.hiScoreDisplaySize	)), math.sin(self.scoreAnim) * 5)
 		
 		# score
-		self.frame.blit(
-			shadow,
-			(
-				200 - (shadow.get_width () * 0.5) + 2,
-				50 - (shadow.get_height() * 0.5) + 2
-			))
-
-		self.frame.blit(
-			img,
-			(
-				200 - (img.get_width () * 0.5),
-				50 - (img.get_height() * 0.5)
-			))
-
+		self.frame.blit( shadow, ( 200 - (shadow.get_width () * 0.5) + 2, 50 - (shadow.get_height() * 0.5) + 2 ))
+		self.frame.blit( img, ( 200 - (img.get_width () * 0.5), 50 - (img.get_height() * 0.5) ))
+		
 		# high score
-		self.frame.blit(
-			hiShadow,
-			(
-				200 - (hiShadow.get_width () * 0.5) + 2,
-				100 - (hiShadow.get_height() * 0.5) + 2
-			))
-
-		self.frame.blit(
-			hiImg,
-			(
-				200 - (hiImg.get_width () * 0.5),
-				100 - (hiImg.get_height() * 0.5)
-			))
+		self.frame.blit( hiShadow, ( 200 - (hiShadow.get_width () * 0.5) + 2, 100 - (hiShadow.get_height() * 0.5) + 2 ))
+		self.frame.blit( hiImg, ( 200 - (hiImg.get_width () * 0.5), 100 - (hiImg.get_height() * 0.5) ))
 
 		# update animations
 		self.scoreAnim += 0.1
-		if self.scoreAnim >= 6.28 : self.scoreAnim = 0
+		if self.scoreAnim >= 6.28: 
+			self.scoreAnim = 0
 		self.scoreDisplaySize *= 0.8
 		self.hiScoreDisplaySize *= 0.8
-
 
 	def render (self) :
 		# clear frame
 		self.frame.fill((0, 0, 0))
 
-		# background
 		self.renderBG()
 
 		# level & enemies
-		[tile  .render(self.frame, self.camera) for tile   in self.tiles]
-		[enemy.render(self.frame, self.camera) for enemy in self.enemies]
+		for tile in self.tiles:
+			tile.render(self.frame, self.camera)
+		for enemy in self.enemies:
+			enemy.render(self.frame, self.camera)
 
 		# target & player
 		self.target.render(self.frame, self.camera)
@@ -190,16 +147,12 @@ class Game :
 		self.clock.tick(self.FPS)
 		pg.display.flip()
 
-
 	def update (self) :
-		# camera & player
 		self.camera.update()
 		self.player.update(self.tiles)
 
-		# enemy
 		self.updateEnemies()
 
-		# target
 		self.target.update(self.player, self.targetPositions, self.updateScore, self)
 
 		if self.player.dead and self.state == 'gameplay':
