@@ -11,9 +11,11 @@ TODO:
   * Add procedurally generated levels
   * Add different types of tiles that disappear.
   * Clean up Main
+    * ~~move background to its own object~~
+    * move scoreboard to its own object
   * make code more pythonic and easier to read
   * "enemy" class shouldn't be changing player, camera, or anything else
-  * fix "enemy" uses function from "player" class
+  * stop "enemy" from using a function from "player" class
   * ~~make game over work gracefully (this was implemented but bugged, fixed bug)~~
   * start game menu
   * game over menu 
