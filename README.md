@@ -24,4 +24,4 @@ TODO:
   * implement main menu
     * implement map selection from main menu
   * game over takes player to main menu where the game can be restarted
-  * create an input handler and add controller support
+  * ~~create an input handler and add (xbox series x) controller support~~

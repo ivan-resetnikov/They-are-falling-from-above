@@ -50,9 +50,9 @@ class Player:
 			self.pos = [198, 0]
 			self.vel = [0, 0]
 
-	def update(self, level):
+	def update(self, level, player_inputs):
 		if not self.dead:
-			self.physics(level, pg.key.get_pressed())
+			self.physics(level, player_inputs)
 		else:
 			self._death()
 
@@ -76,11 +76,11 @@ class Player:
 			particle[1][1] += 0.25
 			if particle[0][1] > 500: self.deathAnimParticles.remove(particle)
 
-	def physics(self, colliders, keys):
+	def physics(self, colliders, player_inputs):
 		### horizontal movement
-		if keys[pg.K_a]: 
+		if 'move_left' in player_inputs: 
 			self.vel[0] -= CONTROLLER['speed']
-		if keys[pg.K_d]: 
+		if 'move_right' in player_inputs: 
 			self.vel[0] += CONTROLLER['speed']
 
 		self.pos[0] += self.vel[0]
@@ -90,9 +90,9 @@ class Player:
 			self.pos[0] -= self.vel[0]
 
 		# friction
-		if keys[pg.K_a] or keys[pg.K_d]: 
+		if 'move_left' in player_inputs or 'move_right' in player_inputs: 
 			self.vel[0] *= CONTROLLER['run_friction']
-		if not keys[pg.K_a] and not keys[pg.K_d]:
+		if not 'move_left' in player_inputs and not 'move_right' in player_inputs:
 			self.vel[0] *= CONTROLLER['brake_friction']
 
 		### gravity
@@ -123,7 +123,7 @@ class Player:
 
 		# jump
 		if self.time_since_landed > 0:
-			if keys[pg.K_SPACE] and not self.holding_space:
+			if 'jump' in player_inputs and not self.holding_space:
 				self.vel[1] = CONTROLLER['jump_force']
 				self.holding_space = True
 				self.pos[1] += self.vel[1]
@@ -132,7 +132,7 @@ class Player:
 		# cut jump height
 		self.pos[1] += 3
 
-		if (self.holding_space and not keys[pg.K_SPACE]) or (self.holding_space and colliding(self, colliders, [8, 0])):
+		if (self.holding_space and not 'jump' in player_inputs) or (self.holding_space and colliding(self, colliders, [8, 0])):
 			self.vel[1] /= 3
 			self.holding_space = False
 			

@@ -26,6 +26,7 @@ class Game:
 		self.loadLevel()
 		self.player = self.core.Player()
 		self.score_board = self.core.ScoreBoard(self.player)
+		self.input_handler = self.core.InputHandler()
 
 		pg.display.set_caption(self.title)
 
@@ -97,8 +98,8 @@ class Game:
 
 	def update(self):
 		self.camera.update()
-		# this also handles input
-		self.player.update(self.tiles)
+		player_inputs = self.input_handler.get_player_inputs()
+		self.player.update(self.tiles, player_inputs)
 		self.updateEnemies()
 		self.target.update(self.player, self.targetPositions, self.score_board.update, self)
 

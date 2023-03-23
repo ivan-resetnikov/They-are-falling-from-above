@@ -8,3 +8,4 @@ from .background import Background
 from .constants import *
 from .score_board import ScoreBoard
 from .level_generator import LevelGenerator
+from .input_handler import InputHandler
