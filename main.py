@@ -6,12 +6,20 @@ import core
 
 class Game:
 	def __init__(self):
-		# initialize core components
 		self.core = core
 		self.windowSize  = (800, 800)
 		self.renderScale = self.core.constants.RENDER_SCALE
 		self.title = 'They are falling from above!'
 		self.FPS = 60
+		self.enemies = []
+		self.enemySpawnCooldown = 0
+		# score counter
+		self.scoreAnim = 0
+		self.scoreDisplaySize = 0
+		self.hiScoreDisplaySize = 0
+		self.font0 = pg.font.Font('assets/pixel.otf', 20)
+		self.font1 = pg.font.Font('assets/pixel.otf', 10)
+		self.hiScore = self.core.loadFromJSON('score.save')['score']
 
 		# initialize window
 		self.window = pg.display.set_mode(self.windowSize)
@@ -135,22 +143,9 @@ class Game:
 		self.tiles, self.targetPositions = self.core.loadLevel()
 		self.player = self.core.Player()
 		self.camera = self.core.Camera(self.player)
-		self.enemies = []
-		self.enemySpawnCooldown = 0
 		self.background = self.core.Background()
 		self.target = self.core.Target(random.choice(self.targetPositions))
-
-		# score counter
-		self.scoreAnim = 0
-		self.scoreDisplaySize = 0
-		self.hiScoreDisplaySize = 0
-
-		self.font0 = pg.font.Font('assets/pixel.otf', 20)
-		self.font1 = pg.font.Font('assets/pixel.otf', 10)
-
-		self.hiScore = self.core.loadFromJSON('score.save')['score']
 		self.updateScore()
-
 		pg.mixer.music.load('assets/music/music.ogg')
 		pg.mixer.music.set_volume(0.2)
 		pg.mixer.music.play(-1)
