@@ -5,7 +5,22 @@ class LevelGenerator:
     pass
 
   def new(self):
-    pass
+    level_map = [
+      '            ',
+      '            ',
+      '            ',
+      '            ',
+      '         .  ',
+      '      .  #  ',
+      '  . . #  .  ',
+      '  # # #  #  ',
+      '  ..# ...#. ',
+      '  ### ##### ',
+      '  ##. ### .  ',
+      '  ###.....# ',
+      '  ######### '
+    ]
+    return level_map
 
   def get_map_classic(self):
     level_map = [

@@ -19,7 +19,8 @@ class Game:
 
 		self.core = core
 		self.level_generator = self.core.LevelGenerator()
-		self.level_map = self.level_generator.get_map_classic()
+		# map selection
+		self.level_map = self.level_generator.new()
 		self.tiles, self.targetPositions = self.loadLevel(self.level_map)
 		self.player = self.core.Player()
 		self.score_board = self.core.ScoreBoard(self.player)

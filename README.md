@@ -22,5 +22,6 @@ TODO:
   * stop "enemy" from using a function from "player" class
   * ~~make game over work gracefully (this was implemented but bugged, fixed bug)~~
   * implement main menu
+    * implement map selection from main menu
   * game over takes player to main menu where the game can be restarted
   * create an input handler and add controller support
