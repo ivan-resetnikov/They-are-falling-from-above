@@ -1,32 +1,52 @@
 import pygame as pg
 import random
-import math
 import core
 
 
 class Game:
 	def __init__(self):
-		self.core = core
-		self.windowSize  = (800, 800)
-		self.renderScale = self.core.constants.RENDER_SCALE
+		self.windowSize = (800, 800)
+		self.renderScale = (400, 400)
 		self.title = 'They are falling from above!'
 		self.FPS = 60
 		self.enemies = []
 		self.enemySpawnCooldown = 0
-		# score counter
-		self.scoreAnim = 0
-		self.scoreDisplaySize = 0
-		self.hiScoreDisplaySize = 0
-		self.font0 = pg.font.Font('assets/pixel.otf', 20)
-		self.font1 = pg.font.Font('assets/pixel.otf', 10)
-		self.hiScore = self.core.loadFromJSON('score.save')['score']
 
 		# initialize window
 		self.window = pg.display.set_mode(self.windowSize)
-		self.frame_surface  = pg.Surface(self.renderScale)
-		self.clock  = pg.time.Clock()
+		self.frame_surface = pg.Surface(self.renderScale)
+		self.clock = pg.time.Clock()
+
+		self.core = core
+		self.level_generator = self.core.LevelGenerator()
+		self.level_map = self.level_generator.get_map_classic()
+		self.tiles, self.targetPositions = self.loadLevel(self.level_map)
+		self.player = self.core.Player()
+		self.score_board = self.core.ScoreBoard(self.player)
 
 		pg.display.set_caption(self.title)
+
+	def loadLevel(self, level_map):
+		tiles = []
+		targetPos = []
+
+		for y, line in enumerate(level_map):
+			for x, char in enumerate(line):
+				if char != ' ' and char != '.':
+					tiles.append(self.core.Tile((x * self.core.constants.TILE_SIZE, y * self.core.constants.TILE_SIZE),))
+				elif char == '.':
+					targetPos.append([x * self.core.constants.TILE_SIZE, y * self.core.constants.TILE_SIZE],)
+
+		return tiles, targetPos
+
+	def onStart(self):
+		self.camera = self.core.Camera(self.player)
+		self.background = self.core.Background()
+		self.target = self.core.Target(random.choice(self.targetPositions))
+		self.score_board.update()
+		pg.mixer.music.load('assets/music/music.ogg')
+		pg.mixer.music.set_volume(0.2)
+		pg.mixer.music.play(-1)
 
 	def run(self):
 		self.onStart()
@@ -55,57 +75,10 @@ class Game:
 		if not self.player.dead: 
 			self.enemySpawnCooldown += 1
 
-	def updateScore(self):
-		if self.player.score > self.hiScore:
-			self.hiScoreDisplaySize = 10
-			self.hiScore = self.player.score
-
-		if self.player.dead:
-			color = (251, 242, 54)
-		else:
-			color = (255, 255, 255)
-
-		self.scoreText = self.font0.render(f'score: {self.player.score}', False, color)
-		self.scoreTextShadow = self.font0.render(f'score: {self.player.score}', False, (34, 32, 52))
-
-		self.hiScoreText = self.font1.render(f'hi score: {self.hiScore}', False, color)
-		self.hiScoreTextShadow = self.font1.render(f'hi score: {self.hiScore}', False,(34, 32, 52))
-
-	def renderScore(self):
-		# text
-		txt_width = self.scoreText.get_width()
-		txt_height = self.scoreText.get_height()
-		img = pg.transform.rotate( pg.transform.scale( self.scoreText, ( txt_width + self.scoreDisplaySize, txt_height + self.scoreDisplaySize )),	math.sin(self.scoreAnim) * 5)
-
-		# shadow
-		shadow = pg.transform.rotate( pg.transform.scale( self.scoreTextShadow,	( self.scoreTextShadow.get_width() + self.scoreDisplaySize, self.scoreTextShadow.get_height() + self.scoreDisplaySize )), math.sin(self.scoreAnim) * 5)
-
-		# text
-		hiImg = pg.transform.rotate( pg.transform.scale( self.hiScoreText, ( self.hiScoreText.get_width () + self.hiScoreDisplaySize, self.hiScoreText.get_height() + self.hiScoreDisplaySize )), math.sin(self.scoreAnim) * 5)
-
-		# shadow
-		hiShadow = pg.transform.rotate( pg.transform.scale( self.hiScoreTextShadow, ( self.hiScoreTextShadow.get_width() + self.hiScoreDisplaySize, self.hiScoreTextShadow.get_height() + self.hiScoreDisplaySize	)), math.sin(self.scoreAnim) * 5)
-		
-		# score
-		self.frame_surface.blit( shadow, ( 200 - (shadow.get_width () * 0.5) + 2, 50 - (shadow.get_height() * 0.5) + 2 ))
-		self.frame_surface.blit( img, ( 200 - (img.get_width () * 0.5), 50 - (img.get_height() * 0.5) ))
-		
-		# high score
-		self.frame_surface.blit( hiShadow, ( 200 - (hiShadow.get_width () * 0.5) + 2, 100 - (hiShadow.get_height() * 0.5) + 2 ))
-		self.frame_surface.blit( hiImg, ( 200 - (hiImg.get_width () * 0.5), 100 - (hiImg.get_height() * 0.5) ))
-
-		# update animations
-		self.scoreAnim += 0.1
-		if self.scoreAnim >= 6.28: 
-			self.scoreAnim = 0
-		self.scoreDisplaySize *= 0.8
-		self.hiScoreDisplaySize *= 0.8
-
 	def render(self):
 		# clear frame
 		self.frame_surface.fill((0, 0, 0))
-
-		self.background.draw(self.frame_surface)
+		self.background.render(self.frame_surface)
 
 		# level & enemies
 		for tile in self.tiles:
@@ -113,12 +86,10 @@ class Game:
 		for enemy in self.enemies:
 			enemy.render(self.frame_surface, self.camera)
 
-		# target & player
 		self.target.render(self.frame_surface, self.camera)
 		self.player.render(self.frame_surface, self.camera)
 
-		# score display
-		self.renderScore()
+		self.score_board.render(self.frame_surface)
 
 		# update window
 		self.window.blit(pg.transform.scale(self.frame_surface, self.windowSize), (0, 0))
@@ -130,25 +101,14 @@ class Game:
 		# this also handles input
 		self.player.update(self.tiles)
 		self.updateEnemies()
-		self.target.update(self.player, self.targetPositions, self.updateScore, self)
+		self.target.update(self.player, self.targetPositions, self.score_board.update, self)
 
 		if self.player.dead:
-			self.updateScore()
-			self.core.writeToJSON('score.save', {'score': self.hiScore})
+			self.score_board.update()
+			self.core.writeToJSON('score.save', {'score': self.score_board.high_score})
 
 		if self.player.pos[1] > 400:
 			self.player.dead = True
-
-	def onStart(self):
-		self.tiles, self.targetPositions = self.core.loadLevel()
-		self.player = self.core.Player()
-		self.camera = self.core.Camera(self.player)
-		self.background = self.core.Background()
-		self.target = self.core.Target(random.choice(self.targetPositions))
-		self.updateScore()
-		pg.mixer.music.load('assets/music/music.ogg')
-		pg.mixer.music.set_volume(0.2)
-		pg.mixer.music.play(-1)
 
 
 if __name__ == '__main__':

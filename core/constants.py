@@ -1,24 +1,8 @@
 
 
 DEATH_ANIM_SIZE = 40
-
-LOCATION = [
-	'            ',
-	'            ',
-	'            ',
-	'            ',
-	'         .  ',
-	'      .  #  ',
-	'  . . #  .  ',
-	'  # # #  #  ',
-	'  ..#....#. ',
-	'  ######### ',
-	'  ######### ',
-	'  ######### ',
-	'  ######### '
-]
-
 TILE_SIZE = 32
+RENDER_SCALE = (400, 400)
 
 CONTROLLER = {
 	'speed': 0.6,
@@ -35,5 +19,3 @@ CONTROLLER = {
 
 	'max_fall_speed': 6.5,
 }
-
-RENDER_SCALE = (400, 400)
