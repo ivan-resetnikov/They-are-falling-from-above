@@ -17,7 +17,7 @@ TODO:
     * organize initialization between init and onStart
     * (new) main's self.render_scale does not use the constant value
     * (new) re-organize level generation so it's out of main
-  * make code more pythonic and easier to read
+  * ~~make code more pythonic and easier to read~~
   * "enemy" class shouldn't be changing player, camera, or anything else
   * stop "enemy" from using a function from "player" class
   * ~~make game over work gracefully (this was implemented but bugged, fixed bug)~~

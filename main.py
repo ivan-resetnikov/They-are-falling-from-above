@@ -21,24 +21,22 @@ class Game:
 		self.level_generator = self.core.LevelGenerator()
 		# map selection
 		self.level_map = self.level_generator.new()
-		self.tiles, self.targetPositions = self.loadLevel(self.level_map)
+		self.tiles = []
+		self.targetPositions = []
+		self.loadLevel()
 		self.player = self.core.Player()
 		self.score_board = self.core.ScoreBoard(self.player)
 
 		pg.display.set_caption(self.title)
 
-	def loadLevel(self, level_map):
-		tiles = []
-		targetPos = []
-
-		for y, line in enumerate(level_map):
+	def loadLevel(self):
+		tile_size = self.core.constants.TILE_SIZE
+		for y, line in enumerate(self.level_map):
 			for x, char in enumerate(line):
 				if char != ' ' and char != '.':
-					tiles.append(self.core.Tile((x * self.core.constants.TILE_SIZE, y * self.core.constants.TILE_SIZE),))
+					self.tiles.append(self.core.Tile((x * tile_size, y * tile_size),))
 				elif char == '.':
-					targetPos.append([x * self.core.constants.TILE_SIZE, y * self.core.constants.TILE_SIZE],)
-
-		return tiles, targetPos
+					self.targetPositions.append([x * tile_size, y * tile_size],)
 
 	def onStart(self):
 		self.camera = self.core.Camera(self.player)
