@@ -13,7 +13,7 @@ class Background:
       for x in range(12):
         self.bgBlocks.append( [ [64 * x - self.bgSpeed, 64 * y - self.bgSpeed] ] )
 
-  def draw(self, blit_surface: pg.Surface):
+  def render(self, blit_surface: pg.Surface):
     for block in self.bgBlocks:
       blit_surface.blit(self.bg, block[0])
       block[0][0] += self.bgSpeed
