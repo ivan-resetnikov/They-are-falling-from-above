@@ -36,3 +36,4 @@ CONTROLLER = {
 	'max_fall_speed': 6.5,
 }
 
+RENDER_SCALE = (400, 400)
