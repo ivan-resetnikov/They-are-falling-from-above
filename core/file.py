@@ -1,10 +1,11 @@
-from json import load, dump
-
-def loadFromJSON (path) :
-	with open(path, 'r') as file :
-		return load(file)
+import json
 
 
-def writeToJSON (path, content) :
-	with open(path, 'w') as file :
-		return dump(content, file)
+def loadFromJSON(path):
+	with open(path, 'r') as file:
+		return json.load(file)
+
+
+def writeToJSON(path, content):
+	with open(path, 'w') as file:
+		return json.dump(content, file)
