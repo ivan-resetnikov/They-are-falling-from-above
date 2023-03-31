@@ -1,5 +1,6 @@
 # They-are-falling-from-above
 
+# IMPORTANT: SnoozingPinata, PLEASE JOIN DISCORD HERE: https://discord.gg/kAX7UErbA5
 
 Forked from: https://github.com/ivan-resetnikov-a/They-are-falling-from-above
 
